@@ -12,19 +12,15 @@
 
 import argparse
 import logging
-import os
 import pathlib
 
 import pandas as pd
 
 # cytotable will merge objects from SQLite file into single cells and save as parquet file
 from cytotable import convert, presets
-
-# used to scope each plate's Parsl run_dir separately (see conversion cell below)
-from cytotable.utils import CYTOTABLE_THREAD_EXECUTOR_LABEL
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
-from parsl.executors import ThreadPoolExecutor as ParslThreadPoolExecutor
+from parsl.providers import LocalProvider
 
 # Set the logging level to a higher level to avoid outputting unnecessary errors from config file in convert function
 logging.getLogger().setLevel(logging.ERROR)
@@ -127,21 +123,6 @@ output_path = pathlib.Path(
     f"{output_dir}/converted_profiles/{plate_id}_converted.parquet"
 )
 
-# use SLURM-allocated CPU count, not full node count
-n_workers = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else (os.cpu_count() or 1)
-print(f"Using {n_workers} parsl workers (based on allocated CPUs)")
-
-# HTEX only -- see cytomining/CytoTable#75, dispatch stall on BR00148919
-parsl_config = Config(
-    run_dir=f"runinfo/{plate_id}",
-    executors=[
-        HighThroughputExecutor(
-            label="htex_default_for_cytotable",
-            max_workers_per_node=n_workers,
-        ),
-    ],
-)
-
 print("Starting conversion with cytotable for plate:", plate_id)
 convert(
     source_path=str(file_path),
@@ -149,8 +130,39 @@ convert(
     dest_datatype=dest_datatype,
     preset=preset,
     joins=joins,
-    chunk_size=30000,
-    parsl_config=parsl_config,
+    chunk_size=10000,
+    parsl_config=Config(
+        executors=[
+            HighThroughputExecutor(
+                label="local_htex",
+                # One CPU per Parsl worker.
+                #
+                # We want 16 concurrent CytoTable tasks, with each worker
+                # assigned one CPU. We do not assign 8 CPUs to each worker
+                # because that could increase CPU/thread usage and memory
+                # pressure within the underlying application.
+                cores_per_worker=1,
+                # Limit the node to 16 concurrent Parsl workers.
+                #
+                # Slurm requests 16 CPUs:
+                #     16 workers × 1 CPU/worker = 16 CPUs
+                max_workers_per_node=16,
+                # Assign workers to distinct CPU cores to reduce contention.
+                cpu_affinity="block",
+                provider=LocalProvider(
+                    # Slurm has already allocated the compute node.
+                    # LocalProvider therefore starts the workers directly
+                    # on that node rather than submitting another Slurm job.
+                    init_blocks=1,
+                    max_blocks=1,
+                ),
+            )
+        ],
+        # Keep Parsl logs separate for each plate.
+        run_dir=f"runinfo/{plate_id}",
+        # The Slurm allocation is fixed for this run.
+        strategy="none",
+    ),
 )
 
 print(f"Plate {plate_id} has been converted with cytotable!")
