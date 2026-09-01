@@ -21,3 +21,7 @@ __pycache__/
 # Ignore local SQLite outputs and preprocessing output folders (too large)
 */*/SQLite_outputs/
 */*/data/
+
+# Ignore per-plate papermill-executed notebooks (e.g. one per plate from
+# 2.single_cell_qc.ipynb) - these are generated copies, not source
+*/*/executed_notebooks/
