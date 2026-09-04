@@ -16,7 +16,6 @@ dependencies:
   - conda-forge::seaborn
   - conda-forge::umap-learn
   - conda-forge::matplotlib
-  - conda-forge::pycytominer>=1.2.0
   - conda-forge::papermill
   - conda-forge::tabulate
   - pip:
@@ -24,3 +23,6 @@ dependencies:
     - coSMicQC>=0.1.0
     - cytodataframe>0.0.17
     - dask[dataframe]
+    # pycytominer is pure Python, so install it via
+    # pip instead to get the current release (no conflicts)
+    - pycytominer==1.7.1
