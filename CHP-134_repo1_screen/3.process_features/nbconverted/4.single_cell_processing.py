@@ -3,7 +3,7 @@
 
 # # Process single cell profiles
 # 
-# > NOTE: We normalize single-cells to the whole-plate unlike bulk profiles, given that the same size is much larger and less likely as impacted by variation.
+# > NOTE: We normalize single-cells to the whole plate unlike bulk profiles, given that the sample size is much larger and less likely as impacted by variation.
 
 # ## Import libraries
 
