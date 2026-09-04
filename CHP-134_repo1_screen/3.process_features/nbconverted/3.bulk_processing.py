@@ -65,9 +65,10 @@ neg_control_query = 'Metadata_Batch_Id.isna() and Metadata_Solvent == "DMSO"'
 # feature columns it's given. Dropping NaN columns first keeps it on the fast path.
 feature_select_ops = [
     "drop_na_columns",
+    "blocklist", # default block list uses same standard CP naming convention
+    "frequency_threshold",
     "variance_threshold",
     "correlation_threshold",
-    "blocklist", # default block list uses same standard CP naming convention
 ]
 
 plate_names

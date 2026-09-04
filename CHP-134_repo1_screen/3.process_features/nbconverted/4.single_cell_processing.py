@@ -61,9 +61,10 @@ plate_names = sorted(file.stem for file in merged_dir.glob("*.parquet"))
 # feature columns it's given. Dropping NaN columns first keeps it on the fast path.
 feature_select_ops = [
     "drop_na_columns",
+    "blocklist", # default block list uses same standard CP naming convention
+    "frequency_threshold",
     "variance_threshold",
     "correlation_threshold",
-    "blocklist",
 ]
 
 plate_names
