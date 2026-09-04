@@ -74,7 +74,7 @@ else:
     batch_label_filter = None
 
 
-# In[ ]:
+# In[3]:
 
 
 # preset configurations based on typical CellProfiler outputs
@@ -165,7 +165,7 @@ for name in plate_names:
 # 
 # > Note: We do not run this code cell in notebook, only in script for stability.
 
-# In[ ]:
+# In[4]:
 
 
 # Directory with converted profiles

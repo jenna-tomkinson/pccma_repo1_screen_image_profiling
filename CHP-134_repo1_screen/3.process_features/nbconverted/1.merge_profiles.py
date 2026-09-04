@@ -72,7 +72,7 @@ print(
 # 
 # Already-merged plates are skipped, so the notebook can safely be re-run if interrupted.
 
-# In[3]:
+# In[ ]:
 
 
 failed_plates = []

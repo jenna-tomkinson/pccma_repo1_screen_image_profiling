@@ -104,6 +104,13 @@ for plate_map_name, layout_mapping_df in corrected_mapping_df.groupby(
     ].copy()
     layout_platemap_df["Plate Barcode"] = plate_map_name
 
+    # Fix the platemap columns to not have spaces and remove () from the column names
+    layout_platemap_df.columns = (
+        layout_platemap_df.columns.str.replace(" ", "_")
+        .str.replace("(", "")
+        .str.replace(")", "")
+    )
+
     output_file = metadata_folder / f"{plate_map_name}_platemap.csv"
     layout_platemap_df.to_csv(output_file, index=False)
     print(

@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# # Perform single-cell quality control
+# 
+# > Note: There will be commented out code for displaying the CytoDataFrames as it is helpful to switch between views during optimization.
+
+# In[1]:
 
 
 import pathlib
@@ -17,7 +21,7 @@ from cytodataframe import CytoDataFrame
 from cosmicqc import find_outliers, label_outliers
 
 
-# In[ ]:
+# In[2]:
 
 
 # Set parameters for papermill to use for processing
@@ -169,7 +173,7 @@ outline_to_orig_mapping = {
 next(iter(outline_to_orig_mapping.items()))
 
 
-# In[ ]:
+# In[9]:
 
 
 # Find large nuclei outliers for the current plate
@@ -216,7 +220,7 @@ if render_diagnostics:
     # nuclei_clustered_outliers_cdf.sample(n=2, random_state=0)
 
 
-# In[ ]:
+# In[10]:
 
 
 # Find low nuclei solidity outliers for the current plate
@@ -261,7 +265,7 @@ if render_diagnostics:
     # solidity_nuclei_outliers_cdf.sample(n=5)
 
 
-# In[ ]:
+# In[11]:
 
 
 # Find background segmented as nuclei outliers for the current plate
@@ -336,7 +340,7 @@ outline_to_orig_mapping_cells = {
 next(iter(outline_to_orig_mapping_cells.items()))
 
 
-# In[ ]:
+# In[13]:
 
 
 # Find cell outliers for the current plate
