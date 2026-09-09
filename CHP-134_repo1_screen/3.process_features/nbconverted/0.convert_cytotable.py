@@ -116,9 +116,21 @@ if not sqlite_dir.exists():
 
 print(f"Reading SQLite files from: {sqlite_dir}")
 
-# directory for processed data
-output_dir = pathlib.Path("data")
+# Where to save the converted profiles. Set to "local" to save under this
+# repo's data directory, or "bandicoot" to save to the bandicoot network mount
+# instead (PCCMA_data/CHP-134_repo1_screen_profiles/converted_profiles).
+save_location = "local"
+
+if save_location == "bandicoot":
+    output_dir = pathlib.Path(
+        "~/mnt/bandicoot/PCCMA_data/CHP-134_repo1_screen_profiles"
+    ).expanduser()
+else:
+    output_dir = pathlib.Path("data")
+
 output_dir.mkdir(parents=True, exist_ok=True)
+
+print(f"Saving converted profiles to: {output_dir / 'converted_profiles'}")
 
 # Discover every (plate, row batch) combination present, since each plate was
 # processed in 16 row batches (one SQLite file per plate/row batch).
@@ -153,7 +165,7 @@ for name in plate_names:
 # 
 # > Note: We do not run this code cell in notebook, only in script for stability.
 
-# In[ ]:
+# In[4]:
 
 
 # Directory with converted profiles
